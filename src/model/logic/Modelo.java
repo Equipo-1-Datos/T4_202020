@@ -3,9 +3,11 @@ package model.logic;
 import java.io.FileReader;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.opencsv.CSVReader;
@@ -14,9 +16,8 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 
 import model.data_structures.ArregloDinamico;
+import model.data_structures.BST;
 import model.data_structures.IArregloDinamico;
-import model.data_structures.TablaSeparateChaining;
-import model.data_structures.SequentialSearch.NodeSS;
 import view.View;
 import java.util.regex.Pattern;
 
@@ -40,20 +41,18 @@ public class Modelo<T> {
 	private View vista= new View();
 
 	private ArregloDinamico<Pelicula> datos;
-	final static String CASTING_SMALL = "data/MoviesCastingRaw-small.csv";
-	final static String DETAILS_SMALL = "data/SmallMoviesDetailsCleaned.csv";
-	final static String CASTING_ALL = "data/AllMoviesCastingRaw.csv";
-	final static String DETAILS_ALL = "data/AllMoviesDetailsCleaned.csv";
+	final static String ACCIDENTES_2019 = "data/us_accidents_dis_2019.csv";
 
-	private TablaSeparateChaining tablaSC;
 
+
+	private BST arbol;
 
 	/**
 	 * Constructor del modelo del mundo con capacidad predefinida
 	 */
 	public Modelo()
 	{
-		tablaSC = new TablaSeparateChaining<>();
+		arbol = new BST();
 	}
 
 	/**
@@ -77,68 +76,38 @@ public class Modelo<T> {
 		+ ", Act4: "+ peli.getActor4() + ", Act5: "+peli.getActor5() + ", Genero: "+ peli.getGenero() + ", Titulo: "+ peli.getTitle() + ", Compania Prod: "+ peli.getProdCompany();
 	}
 
-	public Pelicula get(int i)
-	{
-		return tablaSC.darPrimeroPosicion(i);
-	}
-
-	public int darTamanoSC()
-	{
-		return tablaSC.getM();
-	}
-
-	public int darNumElemSC()
-	{
-		return tablaSC.size();
-	}
-
-	public int darTotalElemSC()
-	{
-		return tablaSC.totalElem();
-	}
-
 	int t = 0;
-	public void cargarSeparateChaining() throws Exception
+	public void cargarBST() throws Exception
 	{
 		try {
 			Stopwatch timer = new Stopwatch();
-			String casting = CASTING_ALL;
-			String details = DETAILS_ALL;
-
-			CSVParser parser1 = new CSVParserBuilder().withSeparator(';').build();
-			CSVParser parser2 = new CSVParserBuilder().withSeparator(';').build();
+			String casting = ACCIDENTES_2019;
+			
+			CSVParser parser1 = new CSVParserBuilder().withSeparator(',').build();
 
 			FileReader fr1 = new FileReader(casting);
-			FileReader fr2 = new FileReader(details);
 
 			CSVReader reader1 = new CSVReaderBuilder(fr1).withCSVParser(parser1).build();
 
-			CSVReader reader2 = new CSVReaderBuilder(fr2).withCSVParser(parser2).build();
-
 			String[] fila1 = null;
-			String[] fila2 = null;
-
-			while((fila1 = reader1.readNext()) != null && (fila2 = reader2.readNext()) != null) 
+			
+			while((fila1 = reader1.readNext()) != null) 
 			{
 
-				if(! fila1[0].equals("id"))
+				if(! fila1[0].equals("ID"))
 				{
-					Pelicula nueva = new Pelicula(fila1[0], fila1[1], fila1[3], fila1[5], fila1[7], fila1[9],
-							fila2[2], fila2[16], fila2[10], fila2[8]);
+					String fecha = fila1[4].substring(0, 10);
+					Date date = new SimpleDateFormat("yyyy-MM-dd").parse(fecha);
+					
+					Accidente nuevo = new Accidente(date,Integer.parseInt(fila1[3]));
 
-					if(!nueva.getReleaseDate().equals("none") && !nueva.getReleaseDate().equals("") && !nueva.getProdCompany().equals("none"))
-					{
-						String key = nueva.getProdCompany() + nueva.getReleaseDate();
-						tablaSC.put(key, nueva);
-						t++;
-						//						System.out.println("Numero de agregadas "+ t);	
-					}
-
+					arbol.put(date.toString(), nuevo);
+					t++;
+					System.out.println(t);
 				}
 			}
 
 			reader1.close();
-			reader2.close();
 
 			double time = timer.elapsedTime();
 			vista.printMessage("Tiempo tomado: "+ time);
@@ -149,103 +118,51 @@ public class Modelo<T> {
 
 	}
 
-	public void pelisCompProdYAnioSC(String key)
-	{
-		Object[] lista = tablaSC.getAll(key).toArray();
-
-		for (int i = 0; i < lista.length; i++) 
-		{
-			vista.printMessage(impresa( (Pelicula) lista[i]));
-		}
-
-		vista.printMessage("El numero de peliculas asi es "+ lista.length);
-
-	}
-
-
-
-	// cargar peliculas a arreglo dinamico, con math.random extraer posiciones del
-	// arreglo al azar y sacar keys de estos (compania+anioProd).
-
-	public void pruebaSC() throws Exception
-	{
-		if(datos == null)
-		{
-			datos = new ArregloDinamico<>(1000);
-			cargarDatos();
-		}
-		float suma = 0;
-		for (int i = 0; i < 800; i++) 
-		{
-			Stopwatch timer = new Stopwatch();
-			int randomNum = ThreadLocalRandom.current().nextInt(0, datos.darTamano());
-			String comp = datos.darElemento(randomNum).prodCompany;
-			String date = datos.darElemento(randomNum).releaseDate;
-			String key = comp+date;
-			tablaSC.getAll(key);
-			double time = timer.elapsedTime();
-			suma += time;
-		}
-
-		for (int i = 0; i < 200; i++) 
-		{
-			Stopwatch timer = new Stopwatch();
-			tablaSC.getAll("holi");	
-			double time = timer.elapsedTime();
-			suma += time;
-		}
-		vista.printMessage("Tiempo Promedio SC: "+ suma/1000);
-	}
-
-
-
-
-
-	public void cargarDatos() throws Exception
-	{
-		try {
-			Stopwatch timer = new Stopwatch();
-			String casting = CASTING_ALL;
-			String details = DETAILS_ALL;
-
-			CSVParser parser1 = new CSVParserBuilder().withSeparator(';').build();
-			CSVParser parser2 = new CSVParserBuilder().withSeparator(';').build();
-
-			FileReader fr1 = new FileReader(casting);
-			FileReader fr2 = new FileReader(details);
-
-			CSVReader reader1 = new CSVReaderBuilder(fr1).withCSVParser(parser1).build();
-
-			CSVReader reader2 = new CSVReaderBuilder(fr2).withCSVParser(parser2).build();
-
-			String[] fila1 = null;
-			String[] fila2 = null;
-
-			while((fila1 = reader1.readNext()) != null && (fila2 = reader2.readNext()) != null) 
-			{	
-				if(! fila1[0].equals("id"))
-				{
-					Pelicula nueva = new Pelicula(fila1[0], fila1[1], fila1[3], fila1[5], fila1[7], fila1[9],
-							fila2[2], fila2[16], fila2[10], fila2[8]);
-
-					if(!nueva.getReleaseDate().equals("none") && !nueva.getReleaseDate().equals("") && !nueva.getProdCompany().equals("none"))
-					{
-						datos.agregar(nueva);
-					}
-				}
-			}
-
-			reader1.close();
-			reader2.close();
-
-			double time = timer.elapsedTime();
-			vista.printMessage("Tiempo tomado en cargar los datos al arreglo dinamico: "+ time);
-		} 
-		catch (Exception e) {
-			throw new Exception(e.getMessage() +"pifeo");
-		}
-
-	}
+//	public void cargarDatos() throws Exception
+//	{
+//		try {
+//			Stopwatch timer = new Stopwatch();
+//			String casting = CASTING_ALL;
+//			String details = DETAILS_ALL;
+//
+//			CSVParser parser1 = new CSVParserBuilder().withSeparator(';').build();
+//			CSVParser parser2 = new CSVParserBuilder().withSeparator(';').build();
+//
+//			FileReader fr1 = new FileReader(casting);
+//			FileReader fr2 = new FileReader(details);
+//
+//			CSVReader reader1 = new CSVReaderBuilder(fr1).withCSVParser(parser1).build();
+//
+//			CSVReader reader2 = new CSVReaderBuilder(fr2).withCSVParser(parser2).build();
+//
+//			String[] fila1 = null;
+//			String[] fila2 = null;
+//
+//			while((fila1 = reader1.readNext()) != null && (fila2 = reader2.readNext()) != null) 
+//			{	
+//				if(! fila1[0].equals("id"))
+//				{
+//					Pelicula nueva = new Pelicula(fila1[0], fila1[1], fila1[3], fila1[5], fila1[7], fila1[9],
+//							fila2[2], fila2[16], fila2[10], fila2[8]);
+//
+//					if(!nueva.getReleaseDate().equals("none") && !nueva.getReleaseDate().equals("") && !nueva.getProdCompany().equals("none"))
+//					{
+//						datos.agregar(nueva);
+//					}
+//				}
+//			}
+//
+//			reader1.close();
+//			reader2.close();
+//
+//			double time = timer.elapsedTime();
+//			vista.printMessage("Tiempo tomado en cargar los datos al arreglo dinamico: "+ time);
+//		} 
+//		catch (Exception e) {
+//			throw new Exception(e.getMessage() +"pifeo");
+//		}
+//
+//	}
 
 
 

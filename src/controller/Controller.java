@@ -29,16 +29,14 @@ public class Controller {
 		Scanner lector = new Scanner(System.in);
 		boolean fin = false;
 		String dato = null;
-		//		String respuesta = null;
-
+		
 		while( !fin ){
 			view.printMenu();
 
 			int option = lector.nextInt();
 			switch(option){
 			case 1:
-				modelo.cargarLinearProbing();
-				
+				modelo.cargarBST();
 				
 //				view.printMessage("Información primera película: "+ modelo.impresa(modelo.getPrimeraLP()));
 //				view.printMessage("Información última película: "+ modelo.impresa(modelo.getUltimaLP()));
@@ -54,15 +52,6 @@ public class Controller {
 //				view.printMessage("Total de películas " + (modelo.darTamanoEncadenada()) + "\n---------");	
 //				break;
 
-			case 2:
-				modelo.cargarSeparateChaining();
-				
-				view.printMessage("Información primera película: "+ modelo.impresa(modelo.get(0)));
-				view.printMessage("Información última película: "+ modelo.impresa(modelo.get(modelo.darTamanoSC()-1)));
-				view.printMessage("M: "+ modelo.darTamanoSC());
-				view.printMessage("N: "+ modelo.darNumElemSC());
-				view.printMessage("Total Elementos: "+ modelo.darTotalElemSC());
-				break;
 //			case 3:
 //				view.printMessage("--------- \n Crear Ranking de películas ");
 //				view.printMessage("Ingresar número de películas en el ranking");
@@ -78,18 +67,6 @@ public class Controller {
 //				int forma = lector.nextInt();		
 //				modelo.rankingPelisDinamica(x, vote, forma);
 //				break;
-			case 4: 
-//				view.printMessage("--------- \nPeliculas de un director: ");
-				view.printMessage("Ingresar fecha DD/MM/AAAA");
-				lector.nextLine();
-				dato = lector.nextLine();
-				view.printMessage("Ingresar Compañía de Producción");
-				String dato1;
-				dato1 = lector.nextLine();
-				view.printMessage("Peliculas del año " + dato + "de compañía "+ dato1+ " :");
-				modelo.pelisCompProdYAnioSC(dato1+dato);
-//				view.printMessage("---------");
-				break;
 //
 //			case 5:
 //				view.printMessage("--------- \n Digite el nombre del actor \n---------");

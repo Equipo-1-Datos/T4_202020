@@ -3,6 +3,8 @@
  */
 package model.data_structures;
 
+import java.util.ArrayList;
+
 /**
  * @author cajiv
  *
@@ -13,7 +15,7 @@ public interface TablaSimbolosOrdenada <K extends Comparable<K>,V>  {
 	
 	public boolean isEmpty();
 	
-	public V get(K key);
+	public ArrayList<V> get(K key);
 	
 	public int getHeight(K key);
 	
