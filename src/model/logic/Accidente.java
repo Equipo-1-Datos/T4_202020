@@ -9,7 +9,7 @@ import java.util.Date;
  * @author cajiv
  *
  */
-public class Accidente implements Comparable <Accidente> {
+public class Accidente {
 
 	Date fechaInicio;
 	int severity;
@@ -20,10 +20,20 @@ public class Accidente implements Comparable <Accidente> {
 		fechaInicio = fechaIn;
 		severity = severidad;
 	}
-	@Override
-	public int compareTo(Accidente o) {
-		// TODO Auto-generated method stub
-		return 0;
+	
+	/**
+	 * @return the fechaInicio
+	 */
+	public Date getFechaInicio() {
+		return fechaInicio;
 	}
+	
+	/**
+	 * @return the severity
+	 */
+	public int getSeverity() {
+		return severity;
+	}
+
 
 }

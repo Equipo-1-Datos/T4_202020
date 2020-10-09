@@ -1,5 +1,7 @@
 package controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 
@@ -37,20 +39,21 @@ public class Controller {
 			switch(option){
 			case 1:
 				modelo.cargarBST();
-				
+//				view.printMessage("Llaves ingresadas");
+//				modelo.llaves();
 //				view.printMessage("Información primera película: "+ modelo.impresa(modelo.getPrimeraLP()));
 //				view.printMessage("Información última película: "+ modelo.impresa(modelo.getUltimaLP()));
 //				view.printMessage(modelo.darTamanoLP()+"");
 //				view.printMessage(modelo.darNumElemLP()+"");
 				break;
 				
-//			case 2:
-//				view.printMessage("--------- \n Cargar Datos de los CSV en Lista Enlazada: ");
-//				modelo.cargarDatosEncadenada();
-//				view.printMessage("Información primera películas: "+ modelo.impresa(modelo.darElementoEncadenada(1)));
-//				view.printMessage("Información última película: "+ modelo.impresa(modelo.darElementoEncadenada(modelo.darTamanoEncadenada())));
-//				view.printMessage("Total de películas " + (modelo.darTamanoEncadenada()) + "\n---------");	
-//				break;
+			case 2:
+				view.printMessage("Ingresar fecha AAAA-MM-DD: ");
+				lector.nextLine();
+				dato = lector.nextLine();
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dato);
+				modelo.get(date.toString());
+				break;
 
 //			case 3:
 //				view.printMessage("--------- \n Crear Ranking de películas ");

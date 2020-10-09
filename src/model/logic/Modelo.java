@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.opencsv.CSVReader;
@@ -45,7 +46,7 @@ public class Modelo<T> {
 
 
 
-	private BST arbol;
+	public BST arbol;
 
 	/**
 	 * Constructor del modelo del mundo con capacidad predefinida
@@ -82,7 +83,7 @@ public class Modelo<T> {
 		try {
 			Stopwatch timer = new Stopwatch();
 			String casting = ACCIDENTES_2019;
-			
+
 			CSVParser parser1 = new CSVParserBuilder().withSeparator(',').build();
 
 			FileReader fr1 = new FileReader(casting);
@@ -90,7 +91,7 @@ public class Modelo<T> {
 			CSVReader reader1 = new CSVReaderBuilder(fr1).withCSVParser(parser1).build();
 
 			String[] fila1 = null;
-			
+
 			while((fila1 = reader1.readNext()) != null) 
 			{
 
@@ -98,12 +99,12 @@ public class Modelo<T> {
 				{
 					String fecha = fila1[4].substring(0, 10);
 					Date date = new SimpleDateFormat("yyyy-MM-dd").parse(fecha);
-					
+
 					Accidente nuevo = new Accidente(date,Integer.parseInt(fila1[3]));
 
 					arbol.put(date.toString(), nuevo);
 					t++;
-					System.out.println(t);
+//					System.out.println(t);
 				}
 			}
 
@@ -118,51 +119,71 @@ public class Modelo<T> {
 
 	}
 
-//	public void cargarDatos() throws Exception
+	public void get(String key)
+	{
+		ArrayList<Accidente> lista = new ArrayList<>();
+		lista =  arbol.get(key);
+
+		for (int i = 0; i < lista.size(); i++) {
+			vista.printMessage("Fecha: " + lista.get(i).getFechaInicio().toString() + " Severidad: "+ lista.get(i).getSeverity());
+		}
+	}
+
+//	public void llaves()
 //	{
-//		try {
-//			Stopwatch timer = new Stopwatch();
-//			String casting = CASTING_ALL;
-//			String details = DETAILS_ALL;
-//
-//			CSVParser parser1 = new CSVParserBuilder().withSeparator(';').build();
-//			CSVParser parser2 = new CSVParserBuilder().withSeparator(';').build();
-//
-//			FileReader fr1 = new FileReader(casting);
-//			FileReader fr2 = new FileReader(details);
-//
-//			CSVReader reader1 = new CSVReaderBuilder(fr1).withCSVParser(parser1).build();
-//
-//			CSVReader reader2 = new CSVReaderBuilder(fr2).withCSVParser(parser2).build();
-//
-//			String[] fila1 = null;
-//			String[] fila2 = null;
-//
-//			while((fila1 = reader1.readNext()) != null && (fila2 = reader2.readNext()) != null) 
-//			{	
-//				if(! fila1[0].equals("id"))
-//				{
-//					Pelicula nueva = new Pelicula(fila1[0], fila1[1], fila1[3], fila1[5], fila1[7], fila1[9],
-//							fila2[2], fila2[16], fila2[10], fila2[8]);
-//
-//					if(!nueva.getReleaseDate().equals("none") && !nueva.getReleaseDate().equals("") && !nueva.getProdCompany().equals("none"))
-//					{
-//						datos.agregar(nueva);
-//					}
-//				}
-//			}
-//
-//			reader1.close();
-//			reader2.close();
-//
-//			double time = timer.elapsedTime();
-//			vista.printMessage("Tiempo tomado en cargar los datos al arreglo dinamico: "+ time);
-//		} 
-//		catch (Exception e) {
-//			throw new Exception(e.getMessage() +"pifeo");
+//		Que
+//		for (int i = 0; i < array.length; i++) {
+//			
 //		}
-//
 //	}
+
+
+
+	//	public void cargarDatos() throws Exception
+	//	{
+	//		try {
+	//			Stopwatch timer = new Stopwatch();
+	//			String casting = CASTING_ALL;
+	//			String details = DETAILS_ALL;
+	//
+	//			CSVParser parser1 = new CSVParserBuilder().withSeparator(';').build();
+	//			CSVParser parser2 = new CSVParserBuilder().withSeparator(';').build();
+	//
+	//			FileReader fr1 = new FileReader(casting);
+	//			FileReader fr2 = new FileReader(details);
+	//
+	//			CSVReader reader1 = new CSVReaderBuilder(fr1).withCSVParser(parser1).build();
+	//
+	//			CSVReader reader2 = new CSVReaderBuilder(fr2).withCSVParser(parser2).build();
+	//
+	//			String[] fila1 = null;
+	//			String[] fila2 = null;
+	//
+	//			while((fila1 = reader1.readNext()) != null && (fila2 = reader2.readNext()) != null) 
+	//			{	
+	//				if(! fila1[0].equals("id"))
+	//				{
+	//					Pelicula nueva = new Pelicula(fila1[0], fila1[1], fila1[3], fila1[5], fila1[7], fila1[9],
+	//							fila2[2], fila2[16], fila2[10], fila2[8]);
+	//
+	//					if(!nueva.getReleaseDate().equals("none") && !nueva.getReleaseDate().equals("") && !nueva.getProdCompany().equals("none"))
+	//					{
+	//						datos.agregar(nueva);
+	//					}
+	//				}
+	//			}
+	//
+	//			reader1.close();
+	//			reader2.close();
+	//
+	//			double time = timer.elapsedTime();
+	//			vista.printMessage("Tiempo tomado en cargar los datos al arreglo dinamico: "+ time);
+	//		} 
+	//		catch (Exception e) {
+	//			throw new Exception(e.getMessage() +"pifeo");
+	//		}
+	//
+	//	}
 
 
 
