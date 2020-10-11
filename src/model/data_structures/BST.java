@@ -63,8 +63,7 @@ public class BST<K extends Comparable<K>, V> implements TablaSimbolosOrdenada<K,
 
 	@Override
 	public int getHeight(K key) {
-		// TODO Auto-generated method stub
-		return 0;
+		return height(root) - height(getNode(root, key));
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public class BST<K extends Comparable<K>, V> implements TablaSimbolosOrdenada<K,
 
 
 	@Override
-	public int heigh() {
+	public int height() {
 		return height(root);
 	}
 
@@ -158,8 +157,50 @@ public class BST<K extends Comparable<K>, V> implements TablaSimbolosOrdenada<K,
 
 	@Override
 	public Iterable<V> valuesInRange(K init, K end) {
-		// TODO Auto-generated method stub
-		return null;
+		if (init == null)
+			throw new IllegalArgumentException("first argument to keys() is null");
+		if (end == null) 
+			throw new IllegalArgumentException("second argument to keys() is null");
+
+		ArrayList<V> queue = new ArrayList<V>(); 
+		values(root, queue, init, end);
+		return queue;
+	}
+
+	private void values(Node x, ArrayList<V> queue, K lo, K hi) {
+		if (x == null) 
+			return; 
+		int cmplo = lo.compareTo(x.key); 
+		int cmphi = hi.compareTo(x.key); 
+		if (cmplo < 0) 
+			values(x.left, queue, lo, hi); 
+		if (cmplo <= 0 && cmphi >= 0) {
+			ArrayList<V> w = x.val;
+			for (int i = 0; i < w.size(); i++) 
+				queue.add(w.get(i)); 
+		}
+		if (cmphi > 0) 
+			values(x.right, queue, lo, hi); 
+	}
+	
+	public Iterable<V> valueSet(){
+		if (isEmpty()) 
+			return new ArrayList<V>();
+		return valuesInRange(min(), max());
+	}
+
+	private Node getNode(Node x, K key) {
+		if (key == null) 
+			throw new IllegalArgumentException("calls get() with a null key");
+		if (x == null) 
+			return null;
+		int cmp = key.compareTo(x.key);
+		if      (cmp < 0) 
+			return getNode(x.left, key);
+		else if (cmp > 0) 
+			return getNode(x.right, key);
+		else              
+			return x;
 	}
 
 }

@@ -23,7 +23,7 @@ public interface TablaSimbolosOrdenada <K extends Comparable<K>,V>  {
 	
 	public void put(K key, V val);
 	
-	public int heigh();
+	public int height();
 	
 	public K min();
 	

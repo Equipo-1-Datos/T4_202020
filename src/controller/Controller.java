@@ -38,7 +38,13 @@ public class Controller {
 			int option = lector.nextInt();
 			switch(option){
 			case 1:
+				view.printMessage("---------");
 				modelo.cargarBST();
+				view.printMessage("El numero total de accidentes en el a�o 2019 fue: " + modelo.darNumTotalAccidentes());
+				view.printMessage("El numero de llaves ingresadas fue de: " + modelo.darNumKeys());
+				view.printMessage("La altura del arbol es: " + modelo.darAltura());
+				view.printMessage("El valor minimo de la llave es: " + modelo.darMin() + ". Y el maximo es: " + modelo.darMax());
+				view.printMessage("---------");
 //				view.printMessage("Llaves ingresadas");
 //				modelo.llaves();
 //				view.printMessage("Información primera película: "+ modelo.impresa(modelo.getPrimeraLP()));
@@ -48,11 +54,14 @@ public class Controller {
 				break;
 				
 			case 2:
-				view.printMessage("Ingresar fecha AAAA-MM-DD: ");
+				view.printMessage("---------");
+				view.printMessage("Ingresar fecha en formato AAAA-MM-DD: ");
 				lector.nextLine();
 				dato = lector.nextLine();
 				Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dato);
 				modelo.get(date.toString());
+				view.printMessage(modelo.detallesGravedad(date.toString()));
+				view.printMessage("---------");
 				break;
 
 //			case 3:
@@ -102,7 +111,7 @@ public class Controller {
 //				modelo.rankingGeneroDinamica(x2, genero, vote2, forma2);
 //				break;
 
-			case 8: 
+			case 3: 
 				view.printMessage("--------- \n Hasta pronto !! \n---------"); 
 				lector.close();
 				fin = true;
